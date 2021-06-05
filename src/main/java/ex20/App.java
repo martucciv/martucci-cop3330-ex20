@@ -3,6 +3,7 @@ package ex20;
  *  UCF COP3330 Summer 2021 Assignment 1 Solutions
  *  Copyright 2021 Veronica Martucci
  */
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class App {
@@ -13,10 +14,12 @@ public class App {
         double orderAmount = app.inputOrderAmount();
         String state = app.inputState();
         String county = app.inputCounty();
-        double taxrate = app.determineTaxRate();
+        double taxrate = app.determineTaxRate(state, county);
         double tax = app.calculateTax(taxrate, orderAmount);
+        String taxRounded = app.roundTax(tax);
         double total = app.calculateTotal(orderAmount, tax);
-
+        String output = app.generateOutput(total, taxRounded, state);
+        System.out.println(output);
     }
 
     public double inputOrderAmount(){
@@ -35,19 +38,19 @@ public class App {
         return input.nextLine();
     }
 
-    public double determineTaxRate(){
+    public double determineTaxRate(String state, String county){
         double taxrate = 0.0;
-        if(inputState().equals("Wisconsin")){
+        if(state.equals("Wisconsin")){
             taxrate = .05;
-            if(inputCounty().equals("Eau Claire")){
+            if(county.equals("Eau Claire")){
                 taxrate = taxrate + 0.005;
             }
-            else if(inputCounty().equals("Dunn")){
+            else if(county.equals("Dunn")){
                 taxrate = taxrate + 0.004;
             }
         }
 
-        if(inputState().equals("Illinois")){
+        if(state.equals("Illinois")){
             taxrate = 0.08;
         }
         return taxrate;
@@ -59,5 +62,18 @@ public class App {
 
     public double calculateTotal(double orderAmount, double tax){
         return orderAmount + tax;
+    }
+
+    public String roundTax(double tax){
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(tax);
+    }
+
+    public String generateOutput(double total, String taxRounded, String state){
+        if(state.equals("Wisconsin") || state.equals("Illinois")){
+            return "The tax is $" +taxRounded+ ".\nThe total is $" +total+ "." ;
+        }
+        else
+            return "The total is $" +total+ ".";
     }
 }
